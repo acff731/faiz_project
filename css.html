@@ -1,24 +1,469 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AHMADFAIZ</title>
+    <title>Game Ular Modern</title>
     <style>
-    .Room{
-        text-align: center;
-        color: orange;
-        margin: 10%;}
-    body{
-        background-color: rebeccapurple;
-        font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif}
-</style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: #fff;
+            overflow: hidden;
+        }
+        
+        .game-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+            padding: 20px;
+            max-width: 500px;
+            width: 100%;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 10px;
+        }
+        
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 5px;
+            background: linear-gradient(to right, #00b4db, #0083b0);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 10px rgba(0, 180, 219, 0.3);
+        }
+        
+        .stats {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 15px;
+            border-radius: 10px;
+            backdrop-filter: blur(10px);
+        }
+        
+        .stat {
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #00b4db;
+        }
+        
+        canvas {
+            border-radius: 10px;
+            background: rgba(0, 0, 0, 0.3);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+        
+        .controls {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+            width: 100%;
+        }
+        
+        .buttons {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            grid-template-rows: repeat(3, 1fr);
+            gap: 10px;
+            width: 200px;
+            height: 200px;
+        }
+        
+        .btn {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            border-radius: 10px;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+        
+        .btn-up {
+            grid-column: 2;
+            grid-row: 1;
+        }
+        
+        .btn-left {
+            grid-column: 1;
+            grid-row: 2;
+        }
+        
+        .btn-right {
+            grid-column: 3;
+            grid-row: 2;
+        }
+        
+        .btn-down {
+            grid-column: 2;
+            grid-row: 3;
+        }
+        
+        .start-btn {
+            padding: 12px 30px;
+            background: linear-gradient(to right, #00b4db, #0083b0);
+            border: none;
+            border-radius: 30px;
+            color: white;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0, 180, 219, 0.4);
+        }
+        
+        .start-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0, 180, 219, 0.6);
+        }
+        
+        .game-over {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0, 0, 0, 0.9);
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+            display: none;
+        }
+        
+        .game-over h2 {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+            color: #ff4d4d;
+        }
+    </style>
 </head>
 <body>
-    <div class="Room">
-        <h1>Assalamualaikum</h1>
-        <h2>SELAMAT DATANG DI TEKNIK KOMPUTER JARINGAN </h2>
-        <p>Jurusan TKJ (Teknik Komputer dan Jaringan) adalah program keahlian di Sekolah Menengah Kejuruan (SMK) yang membekali siswa dengan keterampilan untuk merancang, membangun, mengelola, dan memelihara sistem jaringan komputer, baik lokal maupun luas. Lulusan TKJ dapat menjadi teknisi komputer dan jaringan yang mampu merakit komputer, memperbaiki kerusakan, membangun dan mengelola server, serta mengamankan jaringan dari ancaman siber. </p>
+    <div class="game-container">
+        <div class="header">
+            <h1>ULAR MODERN</h1>
+            <p>Kumpulkan makanan dan tumbuh semakin panjang!</p>
+        </div>
+        
+        <div class="stats">
+            <div class="stat">
+                <div class="stat-value" id="score">0</div>
+                <div>SKOR</div>
+            </div>
+            <div class="stat">
+                <div class="stat-value" id="highScore">0</div>
+                <div>REKOR</div>
+            </div>
+        </div>
+        
+        <canvas id="gameCanvas" width="400" height="400"></canvas>
+        
+        <div class="controls">
+            <button class="start-btn" id="startBtn">MULAI PERMAINAN</button>
+            
+            <div class="buttons">
+                <button class="btn btn-up" id="upBtn">↑</button>
+                <button class="btn btn-left" id="leftBtn">←</button>
+                <button class="btn btn-right" id="rightBtn">→</button>
+                <button class="btn btn-down" id="downBtn">↓</button>
+            </div>
+        </div>
     </div>
+    
+    <div class="game-over" id="gameOver">
+        <h2>GAME OVER!</h2>
+        <p>Skor Anda: <span id="finalScore">0</span></p>
+        <button class="start-btn" id="restartBtn">MAIN LAGI</button>
+    </div>
+
+    <script>
+        // Inisialisasi canvas
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+        
+        // Variabel game
+        const gridSize = 20;
+        let snake = [{x: 10, y: 10}];
+        let food = {x: 15, y: 15};
+        let dx = 0;
+        let dy = 0;
+        let score = 0;
+        let gameRunning = false;
+        let gameLoop;
+        
+        // Elemen UI
+        const scoreElement = document.getElementById('score');
+        const highScoreElement = document.getElementById('highScore');
+        const startBtn = document.getElementById('startBtn');
+        const gameOverScreen = document.getElementById('gameOver');
+        const finalScoreElement = document.getElementById('finalScore');
+        const restartBtn = document.getElementById('restartBtn');
+        
+        // High score dari localStorage
+        let highScore = localStorage.getItem('snakeHighScore') || 0;
+        highScoreElement.textContent = highScore;
+        
+        // Fungsi gambar ular - DIPERBAIKI!
+        function drawSnake() {
+            // Gambar setiap segmen ular
+            snake.forEach((segment, index) => {
+                if (index === 0) {
+                    // Kepala ular - warna biru
+                    ctx.fillStyle = '#00b4db';
+                } else {
+                    // Tubuh ular - hijau dengan gradient
+                    const greenValue = 150 + (index * 5);
+                    ctx.fillStyle = `rgb(0, ${Math.min(255, greenValue)}, 100)`;
+                }
+                
+                ctx.fillRect(segment.x * gridSize, segment.y * gridSize, gridSize, gridSize);
+                
+                // Border untuk setiap segmen
+                ctx.strokeStyle = '#ffffff';
+                ctx.lineWidth = 1;
+                ctx.strokeRect(segment.x * gridSize, segment.y * gridSize, gridSize, gridSize);
+                
+                // Mata untuk kepala ular
+                if (index === 0) {
+                    ctx.fillStyle = 'white';
+                    // Mata kiri
+                    ctx.fillRect(segment.x * gridSize + 4, segment.y * gridSize + 4, 4, 4);
+                    // Mata kanan
+                    ctx.fillRect(segment.x * gridSize + 12, segment.y * gridSize + 4, 4, 4);
+                }
+            });
+        }
+        
+        // Fungsi gambar makanan
+        function drawFood() {
+            // Makanan - warna merah
+            ctx.fillStyle = '#ff4757';
+            ctx.fillRect(food.x * gridSize, food.y * gridSize, gridSize, gridSize);
+            
+            // Efek kilau pada makanan
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
+            ctx.fillRect(food.x * gridSize + 3, food.y * gridSize + 3, 6, 6);
+        }
+        
+        // Fungsi update game
+        function update() {
+            // Pindahkan ular
+            const head = {x: snake[0].x + dx, y: snake[0].y + dy};
+            snake.unshift(head);
+            
+            // Cek apakah ular makan makanan
+            if (head.x === food.x && head.y === food.y) {
+                // Tambah skor
+                score += 10;
+                scoreElement.textContent = score;
+                
+                // Generate makanan baru
+                generateFood();
+            } else {
+                // Hapus ekor jika tidak makan
+                snake.pop();
+            }
+            
+            // Cek tabrakan dengan dinding
+            if (head.x < 0 || head.x >= canvas.width/gridSize || 
+                head.y < 0 || head.y >= canvas.height/gridSize) {
+                gameOver();
+                return;
+            }
+            
+            // Cek tabrakan dengan tubuh sendiri
+            for (let i = 1; i < snake.length; i++) {
+                if (head.x === snake[i].x && head.y === snake[i].y) {
+                    gameOver();
+                    return;
+                }
+            }
+        }
+        
+        // Fungsi generate makanan
+        function generateFood() {
+            food = {
+                x: Math.floor(Math.random() * (canvas.width / gridSize)),
+                y: Math.floor(Math.random() * (canvas.height / gridSize))
+            };
+            
+            // Pastikan makanan tidak muncul di tubuh ular
+            for (let segment of snake) {
+                if (segment.x === food.x && segment.y === food.y) {
+                    generateFood();
+                    break;
+                }
+            }
+        }
+        
+        // Fungsi draw
+        function draw() {
+            // Clear canvas
+            ctx.fillStyle = 'rgba(26, 26, 46, 0.8)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            // Gambar grid
+            ctx.strokeStyle = 'rgba(255, 255, 255, 0.1)';
+            for (let x = 0; x < canvas.width; x += gridSize) {
+                ctx.beginPath();
+                ctx.moveTo(x, 0);
+                ctx.lineTo(x, canvas.height);
+                ctx.stroke();
+            }
+            for (let y = 0; y < canvas.height; y += gridSize) {
+                ctx.beginPath();
+                ctx.moveTo(0, y);
+                ctx.lineTo(canvas.width, y);
+                ctx.stroke();
+            }
+            
+            // Gambar ular dan makanan
+            drawSnake();
+            drawFood();
+        }
+        
+        // Game loop
+        function main() {
+            update();
+            draw();
+        }
+        
+        // Fungsi mulai game
+        function startGame() {
+            if (!gameRunning) {
+                // Reset game state
+                snake = [{x: 10, y: 10}];
+                dx = 1; // Mulai bergerak ke kanan
+                dy = 0;
+                score = 0;
+                scoreElement.textContent = score;
+                generateFood();
+                gameRunning = true;
+                
+                // Sembunyikan layar game over
+                gameOverScreen.style.display = 'none';
+                
+                // Mulai game loop
+                gameLoop = setInterval(main, 150);
+                startBtn.textContent = 'JEDA';
+            } else {
+                // Jeda game
+                clearInterval(gameLoop);
+                gameRunning = false;
+                startBtn.textContent = 'LANJUTKAN';
+            }
+        }
+        
+        // Fungsi game over
+        function gameOver() {
+            clearInterval(gameLoop);
+            gameRunning = false;
+            startBtn.textContent = 'MULAI PERMAINAN';
+            
+            // Update high score
+            if (score > highScore) {
+                highScore = score;
+                highScoreElement.textContent = highScore;
+                localStorage.setItem('snakeHighScore', highScore);
+            }
+            
+            // Tampilkan layar game over
+            finalScoreElement.textContent = score;
+            gameOverScreen.style.display = 'block';
+        }
+        
+        // Event listeners untuk kontrol keyboard
+        document.addEventListener('keydown', (e) => {
+            if (!gameRunning) return;
+            
+            switch(e.key) {
+                case 'ArrowUp':
+                    if (dy !== 1) { // Tidak bisa berbalik arah
+                        dx = 0;
+                        dy = -1;
+                    }
+                    break;
+                case 'ArrowDown':
+                    if (dy !== -1) {
+                        dx = 0;
+                        dy = 1;
+                    }
+                    break;
+                case 'ArrowLeft':
+                    if (dx !== 1) {
+                        dx = -1;
+                        dy = 0;
+                    }
+                    break;
+                case 'ArrowRight':
+                    if (dx !== -1) {
+                        dx = 1;
+                        dy = 0;
+                    }
+                    break;
+            }
+        });
+        
+        // Event listeners untuk tombol di layar
+        document.getElementById('upBtn').addEventListener('click', () => {
+            if (gameRunning && dy !== 1) {
+                dx = 0;
+                dy = -1;
+            }
+        });
+        
+        document.getElementById('downBtn').addEventListener('click', () => {
+            if (gameRunning && dy !== -1) {
+                dx = 0;
+                dy = 1;
+            }
+        });
+        
+        document.getElementById('leftBtn').addEventListener('click', () => {
+            if (gameRunning && dx !== 1) {
+                dx = -1;
+                dy = 0;
+            }
+        });
+        
+        document.getElementById('rightBtn').addEventListener('click', () => {
+            if (gameRunning && dx !== -1) {
+                dx = 1;
+                dy = 0;
+            }
+        });
+        
+        // Event listeners untuk tombol start/restart
+        startBtn.addEventListener('click', startGame);
+        restartBtn.addEventListener('click', startGame);
+        
+        // Gambar state awal
+        draw();
+    </script>
 </body>
 </html>
